@@ -3,6 +3,7 @@ import { ApiError } from "../utils/apiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import ApiResponse from "../utils/apiResponse.js";
+import fs from "fs";
 
 const registerUser = asyncHandler(async (req, res) => {
     // get user details from frontend
@@ -25,18 +26,6 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required");
     }
 
-    const existedUser = await User.findOne({
-        $or: [{ username }, { email }],
-    });
-
-    if (existedUser) {
-        throw new ApiError(
-            409,
-            "User with this username or email already exists",
-            existedUser
-        );
-    }
-
     // check for images
 
     const avatarLocalPath = req.files?.avatar[0]?.path;
@@ -49,6 +38,22 @@ const registerUser = asyncHandler(async (req, res) => {
 
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar image is required");
+    }
+
+    const existedUser = await User.findOne({
+        $or: [{ username }, { email }],
+    });
+
+    if (existedUser) {
+        fs.unlinkSync(avatarLocalPath);
+        if (coverImageLocalPath) {
+            fs.unlinkSync(coverImageLocalPath);
+        }
+        throw new ApiError(
+            409,
+            "User with this username or email already exists",
+            existedUser
+        );
     }
 
     const avatar = await uploadOnCloudinary(avatarLocalPath);
