@@ -1,7 +1,10 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { User } from "../models/user.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import {
+    uploadOnCloudinary,
+    deleteFromCloudinary,
+} from "../utils/cloudinary.js";
 import ApiResponse from "../utils/apiResponse.js";
 import jwt from "jsonwebtoken";
 import fs from "fs";
@@ -318,13 +321,13 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 });
 
 const updateUserAvatar = asyncHandler(async (req, res) => {
-    const avatarLocalPath = req.file?.path;
+    const avatarLocalPath = await req.file?.path;
 
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar image is missing");
     }
 
-    const newAvatar = await uploadOnCloudinary(avatarLocalPath);
+    const newAvatar = await uploadOnCloudinary(avatarLocalPath, "image");
 
     // delete old image from cloudinary
 
@@ -376,7 +379,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 
     if (oldCoverImage) {
         const coverImagePublicId = oldCoverImage.split("/").pop().split(".")[0];
-        await deleteFromCloudinary(coverImagePublicId);
+        await deleteFromCloudinary(coverImagePublicId, "image");
     }
 
     const user = await User.findByIdAndUpdate(
