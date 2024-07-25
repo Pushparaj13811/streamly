@@ -281,13 +281,13 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, null, "Password changed successfully"));
 });
 
-const getCurrentUser = asyncHandler(async (req, res) => {
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(200, req.user, "User details fetched successfully")
-        );
-});
+// const getCurrentUser = asyncHandler(async (req, res) => {
+//     return res
+//         .status(200)
+//         .json(
+//             new ApiResponse(200, req.user, "User details fetched successfully")
+//         );
+// });
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
     const { fullName, email, username } = req.body;
@@ -377,7 +377,6 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     if (oldCoverImage) {
         const coverImagePublicId = oldCoverImage.split("/").pop().split(".")[0];
         await deleteFromCloudinary(coverImagePublicId);
-        
     }
 
     const user = await User.findByIdAndUpdate(
@@ -403,7 +402,6 @@ export {
     logoutUser,
     refreshAccessToken,
     changeCurrentPassword,
-    getCurrentUser,
     updateAccountDetails,
     updateUserAvatar,
     updateUserCoverImage,
