@@ -10,6 +10,7 @@ import {
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { verifyUsername } from "../middlewares/verifyUsername.middleware.js";
+import { addUsernameToParams } from "../middlewares/addusernametourl.middleware.js";
 
 const router = Router();
 
@@ -40,14 +41,17 @@ router.route("/me").post(verifyJWT, (req, res) => {
     res.redirect(`/me/${username}`);
 });
 
-router.route(`/me/:username`).post(verifyJWT, verifyUsername, (req, res) => {
-    res.json(req.user);
-});
+router
+    .route(`/me/:username`)
+    .post(verifyJWT, addUsernameToParams, verifyUsername, (req, res) => {
+        res.json(req.user);
+    });
 
 router
     .route("/me/:username/update-avatar")
     .patch(
         verifyJWT,
+        addUsernameToParams,
         verifyUsername,
         upload.single("avatar"),
         updateUserAvatar
@@ -57,6 +61,7 @@ router
     .route("/me/:username/update-cover-image")
     .patch(
         verifyJWT,
+        addUsernameToParams,
         verifyUsername,
         upload.single("coverImage"),
         updateUserCoverImage
