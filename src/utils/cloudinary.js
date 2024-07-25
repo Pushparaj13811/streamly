@@ -26,13 +26,13 @@ const uploadOnCloudinary = async (localFilePath) => {
         fs.unlinkSync(localFilePath); // remove file from local directory as it is not uploaded on cloudinary i.e. upload operation failed
     }
 };
-const deleteFromCloudinary = async (publicId) => {
+const deleteFromCloudinary = async (publicId, resourceType) => {
     try {
         if (!publicId) return null;
 
         const response = await cloudinary.uploader.destroy(publicId, {
             invalidate: true,
-            resource_type: "auto",
+            resource_type: resourceType,
         });
 
         return response;
