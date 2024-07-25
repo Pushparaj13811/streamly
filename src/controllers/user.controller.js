@@ -324,17 +324,29 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Avatar image is missing");
     }
 
-    const avatar = await uploadOnCloudinary(avatarLocalPath);
+    const newAvatar = await uploadOnCloudinary(avatarLocalPath);
 
-    if (!avatar) {
+    // delete old image from cloudinary
+
+    if (!newAvatar) {
         throw new ApiError(500, "Failed to upload avatar image");
     }
+
+    const oldAvatarImage = (await User.findById(req.user?._id))?.avatar;
+
+    if (!oldAvatarImage) {
+        throw new ApiError(404, "Old avatar image not found");
+    }
+
+    const avatarPublicId = oldAvatarImage.split("/").pop().split(".")[0];
+
+    await deleteFromCloudinary(avatarPublicId);
 
     const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
             $set: {
-                avatar: avatar.url,
+                avatar: newAvatar.url,
             },
         },
         {
@@ -358,6 +370,14 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 
     if (!coverImage) {
         throw new ApiError(500, "Failed to upload cover image");
+    }
+
+    const oldCoverImage = (await User.findById(req.user?._id))?.coverImage;
+
+    if (oldCoverImage) {
+        const coverImagePublicId = oldCoverImage.split("/").pop().split(".")[0];
+        await deleteFromCloudinary(coverImagePublicId);
+        
     }
 
     const user = await User.findByIdAndUpdate(
