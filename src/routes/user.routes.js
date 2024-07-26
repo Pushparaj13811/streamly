@@ -36,14 +36,14 @@ router.route("/logout").post(verifyJWT, logoutUser);
 
 router.route("/refresh-token").post(refreshAccessToken);
 
-router.route("/me").post(verifyJWT, (req, res) => {
+router.route("/me").get(verifyJWT, (req, res) => {
     const username = req.user.username;
     res.redirect(`/me/${username}`);
 });
 
 router
     .route(`/me/:username`)
-    .post(verifyJWT, addUsernameToParams, verifyUsername, (req, res) => {
+    .get(verifyJWT, addUsernameToParams, verifyUsername, (req, res) => {
         res.json(req.user);
     });
 
