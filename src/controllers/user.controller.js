@@ -268,7 +268,26 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 const changeCurrentPassword = asyncHandler(async (req, res) => {
     const { oldPassword, newPassword } = req.body;
 
-    const user = User.findById(req.user?._id);
+    const user = await User.findById(req.user?._id);
+
+    if (oldPassword === newPassword) {
+        throw new ApiError(400, "New password cannot be same as old password");
+    }
+    if (!oldPassword || !newPassword) {
+        throw new ApiError(400, "Old password and new password are required");
+    }
+    if (newPassword.length < 8) {
+        throw new ApiError(400, "Password must be at least 8 characters long");
+    }
+    if (
+        (newPassword &&
+            user?.username &&
+            newPassword.toLowerCase().includes(user.username.toLowerCase())) ||
+        newPassword.toLowerCase().includes(user.email.toLowerCase()) ||
+        user?.username.includes(newPassword.toLowerCase())
+    ) {
+        throw new ApiError(400, "Password cannot be similar to username");
+    }
 
     const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
 
