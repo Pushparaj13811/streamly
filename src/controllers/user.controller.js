@@ -8,6 +8,7 @@ import {
 import ApiResponse from "../utils/apiResponse.js";
 import jwt from "jsonwebtoken";
 import fs from "fs";
+import mongoose from "mongoose";
 
 const generateAccessAndRefreshToken = async (userId) => {
     try {
@@ -459,9 +460,9 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
                     $cond: {
                         if: {
                             $in: [req.user?._id, "$subscribers.subscriber"],
-                            then: true,
-                            else: false,
                         },
+                        then: true,
+                        else: false,
                     },
                 },
             },
