@@ -206,11 +206,7 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 const updateVideo = asyncHandler(async (req, res) => {
     const id = req.params.id;
-    console.log("id", id);
     const { title, description, isPublished } = req.body;
-
-    console.log("req.video", req.video);
-    console.log("req.body", req.body);
 
     if (!id) {
         throw new ApiError(400, "Video ID is required");
@@ -224,10 +220,15 @@ const updateVideo = asyncHandler(async (req, res) => {
     }
 
     let video = await Video.findById(id);
-    console.log("video", video);
-
     if (!video) {
         throw new ApiError(404, "Video not found");
+    }
+
+    const userId = req.user?._id;
+    console.log("userId", userId);
+
+    if (userId !== video.owner.toString()) {
+        throw new ApiError(403, "You are not authorized to update this video");
     }
 
     video.title = title;
@@ -272,6 +273,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
 
 const togglePublishedVideo = asyncHandler(async (req, res) => {
     const { id } = req.params;
+    const userId = req.user?._id;
 
     const video = await Video.findById(id);
 
@@ -279,6 +281,10 @@ const togglePublishedVideo = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Video not found");
     }
 
+    if (userId !== video.owner.toString()) {
+        throw new ApiError(403, "You are not authorized to update this video");
+    }
+    
     video.isPublished = !video.isPublished;
 
     await video.save();
