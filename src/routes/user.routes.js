@@ -47,11 +47,9 @@ router.route("/me").get(verifyJWT, (req, res) => {
     res.redirect(`/me/${username}`);
 });
 
-router
-    .route(`/me/:username`)
-    .get(verifyJWT, addUsernameToParams, verifyUsername, (req, res) => {
-        res.json(req.user);
-    });
+router.route(`/me/:username`).get(verifyJWT, verifyUsername, (req, res) => {
+    res.json(req.user);
+});
 
 router
     .route("/me/:username/update-avatar")
