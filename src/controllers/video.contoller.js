@@ -193,8 +193,6 @@ const getVideoById = asyncHandler(async (req, res) => {
 
     const video = await Video.aggregate(aggregate);
 
-    console.log("video", video);
-
     if (!video.length) {
         throw new ApiError(404, "Video not found");
     }
@@ -284,7 +282,7 @@ const togglePublishedVideo = asyncHandler(async (req, res) => {
     if (userId !== video.owner.toString()) {
         throw new ApiError(403, "You are not authorized to update this video");
     }
-    
+
     video.isPublished = !video.isPublished;
 
     await video.save();
