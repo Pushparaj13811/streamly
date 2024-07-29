@@ -80,7 +80,7 @@ router
         updateAccountDetails
     );
 
-router.route("/channel/:username").get(verifyJWT, getUserChannelProfile);
+router.route("/channel/:username").get(getUserChannelProfile);
 
 router.route("/watch-history").get(verifyJWT, getWatchHistory);
 
