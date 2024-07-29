@@ -3,7 +3,6 @@ import { ApiError } from "../utils/apiError.js";
 import ApiResponse from "../utils/apiResponse.js";
 import { Playlist } from "../models/playlist.model.js";
 import { Video } from "../models/video.model.js";
-import { User } from "../models/user.model.js";
 import mongoose from "mongoose";
 
 const createPlaylist = asyncHandler(async (req, res) => {
