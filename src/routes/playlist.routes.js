@@ -2,6 +2,7 @@ import Router from "express";
 import {
     createPlaylist,
     getPlaylist,
+    getAllPlaylists,
     addVideoToPlaylist,
     deleteVideoFromPlaylist,
     deletePlaylist,
@@ -11,6 +12,7 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 router.route("/").post(verifyJWT, createPlaylist);
+router.route("/get-all-playlists").get(verifyJWT,getAllPlaylists);
 router.route("/get-playlist/:playlistId").get(getPlaylist);
 router.route("/add-videos/:playlistId").patch(verifyJWT, addVideoToPlaylist);
 router
