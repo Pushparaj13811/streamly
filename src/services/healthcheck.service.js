@@ -1,5 +1,4 @@
 import axios from "axios";
-import dotenv from "dotenv";
 
 const API_BASE_URL = `http://localhost:${process.env.PORT}`;
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
