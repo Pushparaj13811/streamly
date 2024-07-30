@@ -5,7 +5,11 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 const checkHealthCheckEndpoint = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/healthCheck`);
+        const response = await axios.get(
+            `${API_BASE_URL}/healthcheck/healthCheck`
+        );
+
+        responseOutput(response);
         if (response.status !== 200) {
             alertAdmin(
                 `HealthCheck endpoint returned status code: ${response.status}`
@@ -18,7 +22,10 @@ const checkHealthCheckEndpoint = async () => {
 
 const checkSystemMetricsEndpoint = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/systemMetrics`);
+        const response = await axios.get(
+            `${API_BASE_URL}/healthCheck/systemMetrics`
+        );
+        responseOutput(response);
         if (response.status !== 200) {
             alertAdmin(
                 "SystemMetrics endpoint returned status code:",
@@ -27,11 +34,15 @@ const checkSystemMetricsEndpoint = async () => {
         }
     } catch (error) {
         alertAdmin("SystemMetrics endpoint error: ", error);
+        console.log("SystemMetrics endpoint error: ", error.message);
     }
 };
 
 const alertAdmin = (message) => {
     console.log(`Alert: ${message}`);
+};
+const responseOutput = (response) => {
+    console.log("Response : ", response);
 };
 setInterval(() => {
     checkHealthCheckEndpoint();

@@ -1,1 +1,1 @@
-export const DB_NAME = "BACKEND";
+export const DB_NAME = "streamly";
