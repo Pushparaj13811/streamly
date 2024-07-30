@@ -22,11 +22,12 @@ const checkSystemMetricsEndpoint = async () => {
         const response = await axios.get(`${API_BASE_URL}/systemMetrics`);
         if (response.status !== 200) {
             alertAdmin(
-                `SystemMetrics endpoint returned status code: ${response.status}`
+                "SystemMetrics endpoint returned status code:",
+                response
             );
         }
     } catch (error) {
-        alertAdmin(`SystemMetrics endpoint error: ${error.message}`);
+        alertAdmin("SystemMetrics endpoint error: ", error);
     }
 };
 
