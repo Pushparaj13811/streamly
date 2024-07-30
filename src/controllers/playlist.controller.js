@@ -162,6 +162,30 @@ const getPlaylist = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, playlist, "Playlists fetched successfully"));
 });
 
+const getAllPlaylists = asyncHandler(async (req, res) => {
+    const ownerId = req.user?.id;
+    console.log(ownerId);
+    if (!ownerId) {
+        throw new ApiError(401, "Unauthorized request");
+    }
+
+    const playlists = await Playlist.find({
+        owner: ownerId,
+    });
+
+    if (!playlists) {
+        return res
+            .status(200)
+            .json(new ApiResponse(200, [], "No playlists found"));
+    }
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, playlists, "Playlists fetched successfully")
+        );
+});
+
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
     const { videoId } = req.body;
     const ownerId = req.user?.id;
@@ -304,4 +328,5 @@ export {
     addVideoToPlaylist,
     deleteVideoFromPlaylist,
     deletePlaylist,
+    getAllPlaylists,
 };
