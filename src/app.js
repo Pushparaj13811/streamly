@@ -1,6 +1,10 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import {
+    checkHealthCheckEndpoint,
+    checkSystemMetricsEndpoint,
+} from "./services/healthcheck.service.js";
 
 const app = express();
 
@@ -52,5 +56,10 @@ app.use("/api/v1/subscriptions", subscriptionRouter);
 app.use("/api/v1/playlists", playlistRouter);
 app.use("/api/v1/dashboard", dashboardRouter);
 app.use("/api/v1/healthcheck", verifyJWT, healthCheckRouter);
+
+// health check monitoring
+
+checkHealthCheckEndpoint();
+checkSystemMetricsEndpoint();
 
 export { app };
