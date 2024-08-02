@@ -1,4 +1,4 @@
-# Project Name: Video Streaming and Hosting Site Backend
+# Project Name: Video Streaming and Hosting Site Backend (Streamly)
 
 ## Description
 This project aims to develop a backend system for a video streaming and hosting site, similar to YouTube. The backend will handle various functionalities such as video uploading, storage, streaming, user authentication, and video management.
