@@ -11,10 +11,14 @@ import {
     getUserChannelProfile,
     getWatchHistory,
 } from "../controllers/user.controller.js";
+import passport from "../config/passport.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { verifyUsername } from "../middlewares/verifyUsername.middleware.js";
 import { addUsernameToParams } from "../middlewares/addusernametourl.middleware.js";
+import { generateAccessAndRefreshToken } from "../controllers/user.controller.js";
+import { options } from "../controllers/user.controller.js";
+import ApiResponse from "../utils/apiResponse.js";
 
 const router = Router();
 
@@ -33,6 +37,39 @@ router.route("/register").post(
 );
 
 router.route("/login").post(loginUser);
+router.get(
+    "/auth/google",
+    passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get(
+    "/auth/google/callback",
+    passport.authenticate("google", { session: false }),
+    async (req, res) => {
+        const user = req.user;
+        console.log("User Refresh token from Google:", user.refreshToken);
+        try {
+            const { accessToken, refreshToken } =
+                await generateAccessAndRefreshToken(user._id);
+            return res
+                .status(200)
+                .cookie("refreshToken", refreshToken, options)
+                .cookie("accessToken", accessToken, options)
+                .json(
+                    new ApiResponse(
+                        200,
+                        { user, accessToken, refreshToken },
+                        "User logged in successfully"
+                    )
+                );
+        } catch (error) {
+            console.error("Error during Google login:", error);
+            res.status(500).json(
+                new ApiResponse(500, null, "Internal server error")
+            );
+        }
+    }
+);
 
 // secured routes
 
