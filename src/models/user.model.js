@@ -43,6 +43,10 @@ const UserSchema = new Schema(
                 ref: "Video",
             },
         ],
+	gender: {
+		type : String,
+		enum: ["male", "female"]
+	},
         password: {
             type: String,
             // required: [true, "Password is required"],
