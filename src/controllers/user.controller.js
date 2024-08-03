@@ -552,5 +552,7 @@ export {
     updateUserAvatar,
     updateUserCoverImage,
     getUserChannelProfile,
+    generateAccessAndRefreshToken,
     getWatchHistory,
+    options
 };
